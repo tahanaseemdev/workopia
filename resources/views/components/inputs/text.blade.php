@@ -7,7 +7,7 @@
     id="{{$id}}"
     type="{{$type}}"
     name="{{$name}}"
-    value="{{old('$name',$value)}}"
+    value="{{old($name,$value)}}"
     class="w-full px-4 py-2 border rounded focus:outline-none @error($name) border-red-500  @enderror"
     placeholder="{{$placeholder}}"
     />
