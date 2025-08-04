@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Models\Job;
 
 class JobController extends Controller
 {
+    use AuthorizesRequests;
+
     // @desc Show all job listings
     // @route GET /jobs
     public function index(): View
@@ -53,7 +56,7 @@ class JobController extends Controller
             'company_website' => 'nullable|url',
         ]);
 
-        $validatedData['user_id'] = 1;
+        $validatedData['user_id'] = auth()->user()->id;
 
         if ($request->hasFile('company_logo')) {
             $path = $request->file('company_logo')->store('logos', 'public');
@@ -75,6 +78,7 @@ class JobController extends Controller
     // @route GET /jobs/{$id}/edit
     public function edit(Job $job): View
     {
+        $this->authorize('update', $job);
         return view("jobs.edit")->with('job', $job);
     }
 
@@ -82,6 +86,7 @@ class JobController extends Controller
     // @route PUT /jobs/{$id}
     public function update(Request $request, Job $job): string
     {
+        $this->authorize('update', $job);
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -121,10 +126,17 @@ class JobController extends Controller
     // @route DELETE /jobs/{$id}
     public function destroy(Job $job): RedirectResponse
     {
+        $this->authorize('delete', $job);
+
         if ($job->company_logo) {
             Storage::disk('public')->delete($job->company_logo);
         }
         $job->delete();
+
+        if (request()->query('from') == 'dashboard') {
+            return redirect()->route('dashboard')->with('success', 'Job listing deleted successfully');
+        }
+
         return redirect()->route('jobs.index')->with('success', 'Job listing deleted successfully');
     }
     public function share(): string
