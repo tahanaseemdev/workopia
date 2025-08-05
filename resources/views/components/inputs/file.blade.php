@@ -1,7 +1,7 @@
 @props(['id','name','label'=>null])
 <div class="mb-4">
     @if($label)
-        <label class="block text-gray-700" for="company_logo">Company Logo</label>
+        <label class="block text-gray-700" for="company_logo">{{$label}}</label>
     @endif
     <input
     id="{{$id}}"
