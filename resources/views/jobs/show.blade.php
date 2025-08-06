@@ -125,10 +125,6 @@
                         </p>
                         @endauth
                     </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-md mt-6">
-                        <div id="map"></div>
-                    </div>
                 </section>	
 					   <aside class="bg-white rounded-lg shadow-md p-3">
                     <h3 class="text-xl text-center mb-4 font-bold">
